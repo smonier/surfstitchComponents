@@ -1,0 +1,19 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+<viamix = 'http://www.jahia.org/viagem/mix/2.0'>
+<viant = 'http://www.jahia.org/viagem/nt/2.0'>  
+ 
+[viamix:surfstitchComponents] > jmix:droppableContent, jmix:editorialContent mixin
+
+[viant:heading] > jnt:content, jmix:bindedComponent, jmix:editorialContent, viamix:surfstitchComponents
+
+[viant:experienceList] > jnt:content, mix:title, viamix:surfstitchComponents
+- bannerText (string, richtext) internationalized
+- maxItems (long) = 10 indexed=no
+- j:startNode (weakreference)
+- filter (string, choicelist[resourceBundle])  < 'Tags', 'Categories', 'Both', 'None'
+- j:type (string, choicelist[subnodetypes = 'jnt:page,jmix:basicContent,jmix:editorialContent,jmix:retrievableContent',resourceBundle]) indexed=no mandatory
+- j:criteria (string,choicelist[resourceBundle]) = 'jcr:created' autocreated indexed=no < 'jcr:created','jcr:lastModified','j:lastPublished'
+- j:sortDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
+- j:catFilters (weakreference, category[autoSelectParent=false]) multiple
+- j:subNodesView (string, choicelist[templates=subnodes,resourceBundle,image,dependentProperties='j:type']) nofulltext itemtype = layout
