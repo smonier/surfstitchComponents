@@ -82,80 +82,97 @@
             </div>
         </div>
         <c:if test="${topFilter.string ne 'None'}">
-            <div class="row">
-                <div class="col-xs-12 w-100">
-                    <div class="blog-refinement-bar ">
-                        <div class="folder-refinement-container categories">
-                            <div class="blog-refinement">
-                                <div class="refinement-item">
-                                    <a class="refinement-link ${selectedCat == '*'? ' active' : ''}" href="#"
-                                       data-filter="*">All</a>
-                                </div>
-                                <c:if test="${topFilter.string == 'Categories' or topFilter.string == 'Both'}">
-                                    <script language="JavaScript">
-                                        var activeItem = "";
-                                        var categories = [];
-                                        <c:forEach items="${listQuery.nodes}" var="objects" varStatus="status">
-                                        <jcr:nodeProperty node="${objects}" var="objCategories" name="j:defaultCategory"/>
-                                        <c:if test="${!empty objCategories}">
-                                        <c:forEach items="${objCategories}" var="category">
-                                        categories.push("${category.node.name}");
-                                        </c:forEach>
-                                        </c:if>
-                                        </c:forEach>
-                                        var uniqueCategories = [];
-                                        $.each(categories, function (i, el) {
-                                            if ($.inArray(el, uniqueCategories) === -1) uniqueCategories.push(el);
-                                        });
+        <div class="row">
+            <div class="col-xs-12 w-100">
+                <div class="blog-refinement-bar ">
+                    <div class="folder-refinement-container categories">
+                        <div class="blog-refinement">
+                            <div class="refinement-item">
+                                <a class="refinement-link ${selectedCat == '*'? ' active' : ''}" href="#"
+                                   data-filter="*">All</a>
+                            </div>
+                            <c:if test="${topFilter.string == 'Categories' or topFilter.string == 'Both'}">
+                                <script language="JavaScript">
+                                    var activeItem = "";
+                                    var categories = [];
+                                    <c:forEach items="${listQuery.nodes}" var="objects" varStatus="status">
+                                    <jcr:nodeProperty node="${objects}" var="objCategories" name="j:defaultCategory"/>
+                                    <c:if test="${!empty objCategories}">
+                                    <c:forEach items="${objCategories}" var="category">
+                                    categories.push("${category.node.name}");
+                                    </c:forEach>
+                                    </c:if>
+                                    </c:forEach>
+                                    var uniqueCategories = [];
+                                    $.each(categories, function (i, el) {
+                                        if ($.inArray(el, uniqueCategories) === -1) uniqueCategories.push(el);
+                                    });
 
-                                        for (var j = 0; j < uniqueCategories.length; j++) {
-                                            var res = uniqueCategories[j].replace(/-/g, " ");
-                                            if ('${selectedCat}' == uniqueCategories[j]) {
-                                                activeItem = " active";
-                                            }
-                                            document.write('<div  class="refinement-item"><a class="refinement-link ' + activeItem + '" href="#" data-filter=".' + uniqueCategories[j] + '">' + res + '</a></div>');
-                                            activeItem = "";
+                                    for (var j = 0; j < uniqueCategories.length; j++) {
+                                        var res = uniqueCategories[j].replace(/-/g, " ");
+                                        if ('${selectedCat}' == uniqueCategories[j]) {
+                                            activeItem = " active";
                                         }
-                                    </script>
-                                </c:if>
-                                <c:if test="${topFilter.string == 'Tags' or topFilter.string == 'Both'}">
-                                    <script language="JavaScript">
-                                        var tags = [];
-                                        <c:forEach items="${listQuery.nodes}" var="objects" varStatus="status">
-                                        <jcr:nodeProperty node="${objects}" var="objTags" name="j:tagList"/>
-                                        <c:if test="${!empty objTags}">
-                                        <c:forEach items="${objTags}" var="tag">
-                                        tags.push("${tag.string}");
-                                        </c:forEach>
-                                        </c:if>
-                                        </c:forEach>
-                                        var uniqueTags = [];
-                                        $.each(tags, function (i, el) {
-                                            if ($.inArray(el, uniqueTags) === -1) uniqueTags.push(el);
-                                        });
-
-                                        for (var j = 0; j < uniqueTags.length; j++) {
-                                            document.write('<div  class="refinement-item"><a class="refinement-link" href="#" data-filter=".' + uniqueTags[j] + '">' + uniqueTags[j] + '</a></div>');
-                                        }
-                                    </script>
-                                </c:if>
+                                        document.write('<div  class="refinement-item"><a class="refinement-link ' + activeItem + '" href="#" data-filter=".' + uniqueCategories[j] + '">' + res + '</a></div>');
+                                        activeItem = "";
+                                    }
+                                </script>
+                            </c:if>
+                        </div>
+                    </div>
+                    <div class="folder-refinement-container">
+                        <div class="blog-refinement">
+                            <c:if test="${topFilter.string == 'Tags' or topFilter.string == 'Both'}">
+                            <div class="refinement-item  toggle-link"><a class="refinement-link" role="button"
+                                                                         data-toggle="tagsSection"
+                                                                         data-target="#collapseTags"
+                                                                         aria-expanded="false"
+                                                                         aria-controls="collapseTags">Show Tags</a>
                             </div>
                         </div>
                     </div>
+                    <div class="attribute-refinement-container categories">
+                        <ul id="collapseTags" class="refinement-list tagsSection">
+
+
+                            <script language="JavaScript">
+                                var tags = [];
+                                <c:forEach items="${listQuery.nodes}" var="objects" varStatus="status">
+                                <jcr:nodeProperty node="${objects}" var="objTags" name="j:tagList"/>
+                                <c:if test="${!empty objTags}">
+                                <c:forEach items="${objTags}" var="tag">
+                                tags.push("${tag.string}");
+                                </c:forEach>
+                                </c:if>
+                                </c:forEach>
+                                var uniqueTags = [];
+                                $.each(tags, function (i, el) {
+                                    if ($.inArray(el, uniqueTags) === -1) uniqueTags.push(el);
+                                });
+
+                                for (var j = 0; j < uniqueTags.length; j++) {
+                                    document.write('<li><a class="refinement-link ' + uniqueTags[j] + '" title="' + uniqueTags[j] + '"href="#" data-filter=".' + uniqueTags[j] + '">' + uniqueTags[j] + '</a></li>');
+                                }
+                            </script>
+                            </c:if>
+                        </ul>
+
+                    </div>
                 </div>
             </div>
-        </c:if>
-        <div class="row gallary-thumbs">
-            <c:forEach items="${listQuery.nodes}" var="objects" varStatus="status">
-                <template:module node="${objects}" view="${subNodesView.string}"/>
-            </c:forEach>
         </div>
+    </div>
+    </c:if>
+    <div class="row gallary-thumbs">
+        <c:forEach items="${listQuery.nodes}" var="objects" varStatus="status">
+            <template:module node="${objects}" view="${subNodesView.string}"/>
+        </c:forEach>
     </div>
 </div>
 <script>
-<c:if test="${selectedCat.toString() ne '*'}">
+    <c:if test="${selectedCat.toString() ne '*'}">
     <c:set var="isoFilter" value=".${selectedCat}"/>
-</c:if>
+    </c:if>
 
     $(window).load(function () {
         var $container = $('.animate-grid .gallary-thumbs');
@@ -171,6 +188,22 @@
                 filter: selector
             });
             return false;
+        });
+    });
+
+    $(document).ready(function () {
+
+
+        $('[data-toggle="tagsSection"]').click(function () {
+            $(this).toggleClass("active");
+            if ($(this).hasClass("active")) {
+                $(this).text("Hide Tags");
+                $('.tagsSection').addClass('open');
+            } else {
+                $(this).text("Show Tags");
+                $('.tagsSection').removeClass('open');
+
+            }
         });
     });
 </script>
