@@ -31,6 +31,8 @@
 <jcr:nodeProperty node="${currentNode}" name='j:sortDirection' var="sortDirection"/>
 <jcr:nodeProperty node="${currentNode}" name='j:type' var="type"/>
 <jcr:nodeProperty node="${currentNode}" name="j:catFilters" var="catFilters"/>
+<jcr:nodeProperty node="${currentNode}" name="j:catNoFilters" var="catNoFilters"/>
+<jcr:nodeProperty node="${currentNode}" name="j:selectedCat" var="selectedCat"/>
 <jcr:nodeProperty node="${currentNode}" name="j:subNodesView" var="subNodesView"/>
 
 <c:if test="${not empty startNode}">
@@ -44,16 +46,31 @@
           limit="${currentResource.moduleParams.queryLoadAllUnsorted == 'true' ? -1 : maxItems.long}">
     <query:selector nodeTypeName="${type.string}"/>
     <query:descendantNode path="${startNode.path}"/>
-
+    <query:or>
+        <c:forEach var="filter" items="${catFilters}">
+            <c:if test="${not empty filter.string}">
+                <query:equalTo propertyName="j:defaultCategory" value="${filter.string}"/>
+            </c:if>
+        </c:forEach>
+    </query:or>
+    <query:and>
+        <query:or>
+            <c:forEach var="noFilter" items="${catNoFilters}">
+                <c:if test="${not empty noFilter.string}">
+                    <query:notEqualTo propertyName="j:defaultCategory" value="${noFilter.string}"/>
+                </c:if>
+            </c:forEach>
+        </query:or>
+    </query:and>
     <c:if test="${not currentResource.moduleParams.queryLoadAllUnsorted == 'true'}">
         <query:sortBy propertyName="${criteria.string}" order="${sortDirection.string}"/>
     </c:if>
 </jcr:jqom>
-<c:if test="${not empty catFilters}">
-    <c:set value="${catFilters[0]}" var="catFilter"/>
+<c:if test="${not empty selectedCat}">
+    <c:set value="${selectedCat[0].node.name}" var="selectedCat"/>
 </c:if>
-<c:if test="${ empty catFilters}">
-    <c:set value="*" var="catFilter"/>
+<c:if test="${empty selectedCat}">
+    <c:set value="*" var="selectedCat"/>
 </c:if>
 <!-- Portfolio Grid Section -->
 <div class="animate-grid">
@@ -71,7 +88,7 @@
                         <div class="folder-refinement-container categories">
                             <div class="blog-refinement">
                                 <div class="refinement-item">
-                                    <a class="refinement-link ${catFilter == '*'? ' active' : ''}" href="#"
+                                    <a class="refinement-link ${selectedCat == '*'? ' active' : ''}" href="#"
                                        data-filter="*">All</a>
                                 </div>
                                 <c:if test="${topFilter.string == 'Categories' or topFilter.string == 'Both'}">
@@ -93,7 +110,7 @@
 
                                         for (var j = 0; j < uniqueCategories.length; j++) {
                                             var res = uniqueCategories[j].replace(/-/g, " ");
-                                            if ('${catFilter.node.name}' == uniqueCategories[j]) {
+                                            if ('${selectedCat}' == uniqueCategories[j]) {
                                                 activeItem = " active";
                                             }
                                             document.write('<div  class="refinement-item"><a class="refinement-link ' + activeItem + '" href="#" data-filter=".' + uniqueCategories[j] + '">' + res + '</a></div>');
@@ -135,13 +152,15 @@
         </div>
     </div>
 </div>
-
 <script>
+<c:if test="${selectedCat.toString() ne '*'}">
+    <c:set var="isoFilter" value=".${selectedCat}"/>
+</c:if>
 
     $(window).load(function () {
         var $container = $('.animate-grid .gallary-thumbs');
         $container.isotope({
-            filter: '.${catFilter.node.name}',
+            filter: '${isoFilter}',
             transitionDuration: '0.6s',
         });
         $('.animate-grid .categories a').click(function () {

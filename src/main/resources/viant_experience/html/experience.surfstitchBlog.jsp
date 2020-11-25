@@ -56,7 +56,7 @@
     <div class="blog-wrapper">
         <div class="img-blog ">
             <a href="${url.base}${currentNode.path}.html?jsite=${siteNode.UUID}">
-                <img src="${backgroundImageUrl}" alt="${name}">
+                <img src="${teaserImageUrl}" alt="${name}">
             </a>
         </div>
         <div class="content-blog">

@@ -15,5 +15,7 @@
 - j:type (string, choicelist[subnodetypes = 'jnt:page,jmix:basicContent,jmix:editorialContent,jmix:retrievableContent',resourceBundle]) indexed=no mandatory
 - j:criteria (string,choicelist[resourceBundle]) = 'jcr:created' autocreated indexed=no < 'jcr:created','jcr:lastModified','j:lastPublished'
 - j:sortDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
+- j:selectedCat (weakreference, category[autoSelectParent=false]) multiple
 - j:catFilters (weakreference, category[autoSelectParent=false]) multiple
+- j:catNoFilters (weakreference, category[autoSelectParent=false]) multiple
 - j:subNodesView (string, choicelist[templates=subnodes,resourceBundle,image,dependentProperties='j:type']) nofulltext itemtype = layout
